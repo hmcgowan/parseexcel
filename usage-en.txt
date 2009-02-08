@@ -1,0 +1,112 @@
+Installing Programs with install.rb / setup.rb
+==============================================
+    
+Overview
+--------
+    
+  Type these lines on command line:
+  ("#" line may require root privilege)
+
+      $ ruby install.rb config
+      $ ruby install.rb setup
+      # ruby install.rb install
+
+    
+  There's no difference in a usage between install.rb
+  and setup.rb.
+
+      $ ruby setup.rb config
+      $ ruby setup.rb setup
+      # ruby setup.rb install
+
+    
+Details
+-------
+    
+  Usage of install.rb/setup.rb is:
+
+      ruby install.rb <global options>
+      ruby install.rb [<global options>] <task> [<task options>]
+
+    
+    -q,--quiet
+        suppress message outputs
+    --verbose
+        output messages verbosely (default)
+    -h,--help
+        prints help and quit
+    -v,--version
+        prints version and quit
+    --copyright
+        prints copyright and quit
+    
+  These are acceptable tasks:
+    config
+        saves configurations
+    show
+        prints current configurations
+    setup
+        compiles extentions
+    install
+        installs files
+    clean
+        cleans created files
+    
+  Task Options for Config
+  -----------------------
+    
+    --prefix=PATH
+        a prefix of the installing directory path
+    --std-ruby=PATH
+        the directory for standard ruby libraries
+    --site-ruby-common=PATH
+        the directory for version-independent non-standard
+        ruby libraries
+    --site-ruby=PATH
+        the directory for non-standard ruby libraries
+    --bin-dir=PATH
+        the directory for commands
+    --rb-dir=PATH
+        the directory for ruby scripts
+    --so-dir=PATH
+        the directory for ruby extentions
+    --data-dir=PATH
+        the directory for shared data
+    --ruby-path=PATH
+        path to set to #! line
+    --ruby-prog=PATH
+        the ruby program using for installation
+    --make-prog=NAME
+        the make program to compile ruby extentions
+    --without-ext
+        forces to install.rb never to compile/install
+        ruby extentions.
+    --rbconfig=PATH
+        your rbconfig.rb to load
+    
+  You can view default values of these options by typing
+
+      $ ruby install.rb --help
+
+    
+  In addition, setup.rb accepts these options:
+    --with=NAME,NAME,NAME...
+        package names which you want to install
+    --without=NAME,NAME,NAME...
+        package names which you do not want to install
+    
+  [NOTE] You can pass options for extconf.rb like this:
+
+      ruby install.rb config -- --with-tklib=/usr/lib/libtk-ja.so.8.0
+
+    
+  Task Options for Install
+  ------------------------
+    
+    --no-harm
+        prints what to do and done nothing really.
+    --prefix=PATH
+        a prefix of the installing directory path.
+        This option may help binary package maintainers.
+        A default value is an empty string.
+    

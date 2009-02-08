@@ -1,0 +1,88 @@
+Spreadsheet::ParseExcel - Get information from an Excel file.
+============
+Version: 0.5.2
+Date: 2007-07-19
+
+Short Description:
+Spreadsheet::ParseExcel allows you to get information out of a 
+simple Excel file
+This Package is an - as of today incomplete - translation of 
+Kawai Takanoris Perl-Module.
+
+
+Requirements
+------------
+
+  * ruby 1.8
+	
+Install
+-------
+
+  De-Compress archive and enter its top directory.
+  Then type:
+
+    $ ruby install.rb config
+    $ ruby install.rb setup
+   ($ su)
+    # ruby install.rb install
+
+  You can also install files into your favorite directory
+  by supplying install.rb with some options. Try "ruby install.rb --help".
+  More information can be found in the redistributed file usage-en.txt
+
+
+Usage
+-----
+#!/usr/bin/env ruby
+
+require 'parseexcel'
+
+# your first step is always reading in the file.
+# that gives you a workbook-object, which has one or more worksheets,
+# just like in Excel you have the possibility of multiple worksheets.
+workbook = Spreadsheet::ParseExcel.parse(path_to_file)
+
+# usually, you want the first worksheet:
+worksheet = workbook.worksheet(0)
+
+# now you can either iterate over all rows, skipping the first number of
+# rows (in case you know they just contain column headers)
+skip = 2
+worksheet.each(skip) { |row|
+  # a row is actually just an Array of Cells..
+  first_cell = row.at(0)
+
+  # how you get data out of the cell depends on what datatype you
+  # expect:
+
+  # if you expect a String, you can pass an encoding and (iconv
+  # required) the content of the cell will be converted.
+  str = row.at(1).to_s('latin1')
+
+  # if you expect a Float:
+  float = row.at(2).to_f
+
+  # if you expect an Integer:
+  int = row.at(3).to_i
+
+  # if you expect a Date:
+  date = row.at(4).date
+
+  # ParseExcel makes a guess at what Datatype a cell has. At the moment,
+        # possible values are: :date, :numeric, :text
+        celltype = first_cell.type
+}
+
+# if you know exactly which row your data resides in, you may just
+# retrieve that row, which is again simply an Array of Cells
+row = worksheet.row(26)
+
+
+License
+-------
+
+	LGPL
+
+	
+URL: http://download.ywesee.com/parseexcel
+Author: Hannes Wyss <hwyss@ywesee.com>

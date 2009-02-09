@@ -570,7 +570,6 @@ module Spreadsheet
           :name        => name,
           :bold        => bold,
           :italic      => italic,
-          :underline   => underline,
           :strikeout   => strikeout,
         }
    

@@ -573,6 +573,8 @@ module Spreadsheet
         }
    
         @workbook.add_font(font)
+        
+        #Font 4 doesn't exist so put in a placeholder
         @workbook.add_font({}) if @workbook.fonts.size == 4
       end
 

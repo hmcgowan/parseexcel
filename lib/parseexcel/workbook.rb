@@ -30,14 +30,15 @@ module Spreadsheet
 			attr_accessor :author
 		end
 		class Workbook
-			attr_accessor :biffversion, :version, :flg_1904
+			attr_accessor :biffversion, :version, :flg_1904, :fonts
 			attr_writer :format
 			def initialize
 				@worksheets = []
 				@pkg_strs = []
 				@annotations = []
 				@formats = []
-			end
+  			@fonts = []
+  		end
 			def add_annotation(pkg_str)
 				@annotations.push(pkg_str)
 			end
@@ -47,7 +48,10 @@ module Spreadsheet
 			def add_cell_format(format)
 				@formats.push(format)
 			end
-			def add_pkg_str(pkg_str)
+	    def add_font(font_str)
+    		@fonts.push(font_str)
+    	end
+  		def add_pkg_str(pkg_str)
 				@pkg_strs.push(pkg_str)
 			end
 			def annotation(idx)
@@ -55,6 +59,9 @@ module Spreadsheet
 			end
 			def format(idx=nil)
 				(idx.nil?) ? @format : @formats.at(idx)
+			end
+			def font(idx)
+				@fonts.at(idx)
 			end
 			def pkg_str(idx)
 				@pkg_strs.at(idx)

@@ -98,11 +98,10 @@ module Spreadsheet
 				0x208   => :row,               # RowData
 				0x221   => :array,             # Array (Consider)
 				0x225   => :default_row_height,# Consider
-=begin
+
 				0x31    => :font,              # Font
 				0x231   => :font,              # Font
 
-=end
 				0x27E   => :rk,                # RK
 				0x41E   => :format,            # Format
 				0x06    => :formula,           # Formula
@@ -507,6 +506,65 @@ module Spreadsheet
 				return unless(@current_sheet)
 				@current_sheet.footer = simple_string(work)
 			end
+
+      def font(op, len, work)
+        case @workbook.biffversion 
+        when VERSION_BIFF8
+          height, attribute, color, bold, superscript, underline = work.unpack('v5c')
+          size, high =  work[14,2].unpack('cc')
+          if high != 0
+               #  work[16, size * 2 ]
+              #           $sFntName = substr( work, 16, $iSize * 2 );
+              #           _SwapForUnicode( \$sFntName );
+              #           $sFntName = $oBook->{FmtClass}->TextFmt( $sFntName, 'ucs2' );
+          else
+              #  work[16, size ]
+              #           $sFntName = substr( work, 16, $iSize );
+              #           $sFntName = $oBook->{FmtClass}->TextFmt( $sFntName, '_native_' );
+          end    
+          bold      = (bold >= 0x2BC)         ? true : false;
+          italic    = (attribute & 0x02 != 0) ? true : false;
+          strikeout = (attribute & 0x08 != 0) ? true : false;
+          underline = (underline != 0)        ? true : false;
+        when VERSION_BIFF5
+          height, attribute, color, bold, superscript, underline = work.unpack('v5c')
+            #            $sFntName =
+            #              $oBook->{FmtClass}
+            #              ->TextFmt( substr( work, 15, unpack( "c", substr( work, 14, 1 ) ) ),
+            #                '_native_' );
+            #       work[5, work[4,1].unpack('c')].first
+   
+            bold      = (bold >= 0x2BC)         ? true : false;
+            italic    = (attribute & 0x02 != 0) ? true : false;
+            strikeout = (attribute & 0x08 != 0) ? true : false;
+            underline = (underline != 0)        ? true : false;
+        else
+          height, attribute = work.unpack('v2')
+          color = nil
+          superscript = 0
+          bold      = (attribute & 0x01 != 0) ? true : false;
+          italic    = (attribute & 0x02 != 0) ? true : false;
+          strikeout = (attribute & 0x04 != 0) ? true : false;
+          underline = (attribute & 0x08 != 0) ? true : false;
+          work[5, work[4,1].unpack('c')].first
+        end
+        font = {
+          :height      => height / 20.0,
+          :attribute   => attribute,
+          :color       => color,
+          :superscript => superscript,
+          :underline   => underline, 
+         # :name        => name,
+          :bold         => bold,
+          :italic      => italic,
+          :underline   => underline,
+          :strikeout   => strikeout,
+        }
+   
+        @workbook.add_font(font)
+        @workbook.add_font({}) if @workbook.fonts.size == 4
+      end
+
 			def format(op, len, work) # DK:P336
 				fmt = if([
 						VERSION_BIFF2, 
@@ -521,6 +579,7 @@ module Spreadsheet
 				idx = work[0,2].unpack('v').first
 				@workbook.add_text_format(idx, fmt)
 			end
+			
 			def formula(op, len, work) # DK:P336
 				row, col, fmt = work.unpack('v3')
 				flag = work[12,2].unpack('v')

@@ -644,7 +644,7 @@ class TestParser2 < Test::Unit::TestCase
 		sheet = book.worksheet(0)
 		cell0 = sheet.cell(0,0)
 		assert_equal('WINDOWS-1252', cell0.encoding)
-		assert_equal('Ã¤', cell0.to_s('latin1'))
+		assert_equal('ä', cell0.to_s('latin1'))
 	end
 	def test_file_umlaut__biff8
 		source = File.expand_path('data/umlaut.biff8.xls', File.dirname(__FILE__))
@@ -655,7 +655,7 @@ class TestParser2 < Test::Unit::TestCase
 		sheet = book.worksheet(0)
 		cell0 = sheet.cell(0,0)
 		assert_equal('UTF-16LE', cell0.encoding)
-		assert_equal('Ã¤', cell0.to_s('latin1'))
+		assert_equal('ä', cell0.to_s('latin1'))
 	end
 	def test_file_uncompressed_str
 		source = File.expand_path('data/uncompressed.str.xls', File.dirname(__FILE__))
@@ -739,6 +739,33 @@ class TestParser2 < Test::Unit::TestCase
     #assert_equal(sheet, book.worksheet("T\0h\0i\0r\0d\0 \0W\0o\0r\0k\0s\0h\0e\0e\0t\0"))
 	end
 	
+	
+  def test_font_interface_exists
+     source = File.expand_path('data/style.xls', File.dirname(__FILE__))
+		 parser = Spreadsheet::ParseExcel::Parser.new
+		 book = nil
+		 book = parser.parse(source)
+  	 assert_nothing_raised { book.fonts }
+  	 assert_nothing_raised { book.font(0) }
+  	 assert_nothing_raised { book.add_font(0) }
+  end
+
+  def test_font_interface_parsing
+     source = File.expand_path('data/style.xls', File.dirname(__FILE__))
+		 parser = Spreadsheet::ParseExcel::Parser.new
+		 book = nil
+		 book = parser.parse(source)
+  	 assert_equal({:height=>10.0,
+                   :attribute=>0,
+                   :bold=>false,
+                   :superscript=>0,
+                   :subscript=>0,
+                   :italic=>false,
+                   :underline=>false,
+                   :strikeout=>false,
+                   :color=>32767}, book.font(0))
+  end
+ 
 	def test_font_parser_styles
 		source = File.expand_path('data/style.xls', File.dirname(__FILE__))
 		book = nil
@@ -747,7 +774,7 @@ class TestParser2 < Test::Unit::TestCase
 		}
 		worksheet = book.worksheet(0)
 		
-    id = worksheet.row(0).at(0).format.font_no 
+	  id = worksheet.row(0).at(0).format.font_no 
     assert_equal true, book.font(id)[:bold]
     assert_equal false, book.font(id)[:italic]
     assert_equal false, book.font(id)[:underline]
@@ -794,6 +821,30 @@ class TestParser2 < Test::Unit::TestCase
     assert_equal false, book.font(id)[:italic]
     assert_equal false, book.font(id)[:underline]
     assert_equal true, book.font(id)[:strikeout]
+
+    id = worksheet.row(8).at(0).format.font_no 
+    assert_equal 12.0, book.font(id)[:height]
+    assert_equal false, book.font(id)[:superscript]
+    assert_equal false, book.font(id)[:subscript]
+    assert_equal 32767, book.font(id)[:color]
+ 
+    id = worksheet.row(9).at(0).format.font_no 
+    assert_equal 10.0, book.font(id)[:height]
+    assert_equal true, book.font(id)[:superscript]
+    assert_equal false, book.font(id)[:subscript]
+    assert_equal 32767, book.font(id)[:color]
+
+    id = worksheet.row(10).at(0).format.font_no 
+    assert_equal 10.0, book.font(id)[:height]
+    assert_equal false, book.font(id)[:superscript]
+    assert_equal true, book.font(id)[:subscript]
+    assert_equal 32767, book.font(id)[:color]
+
+    id = worksheet.row(11).at(0).format.font_no 
+    assert_equal 10.0, book.font(id)[:height]
+    assert_equal false, book.font(id)[:superscript]
+    assert_equal false, book.font(id)[:subscript]
+    assert_equal 16, book.font(id)[:color]
 end    
 		
 end

@@ -562,7 +562,6 @@ module Spreadsheet
         
         font = {
           :height      => height / 20.0,
-          :attribute   => attribute,
           :color       => color,
           :superscript => superscript,
           :subscript   => subscript,

@@ -756,7 +756,6 @@ class TestParser2 < Test::Unit::TestCase
 		 book = nil
 		 book = parser.parse(source)
   	 assert_equal({:height=>10.0,
-                   :attribute=>0,
                    :bold=>false,
                    :superscript=>false,
                    :subscript=>false,

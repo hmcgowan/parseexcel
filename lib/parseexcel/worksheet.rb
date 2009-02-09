@@ -106,6 +106,9 @@ module Spreadsheet
 						@value.to_s
 					end
 				end
+				def font
+				  @book.font(@format.font_no)
+			  end
 				def type 
 					@format.cell_type(self) if @format
 				end

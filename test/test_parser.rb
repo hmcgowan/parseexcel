@@ -857,5 +857,26 @@ class TestParser2 < Test::Unit::TestCase
     assert_equal 32767, book.font(id)[:color]
     assert_equal 'Courier New', book.font(id)[:name]
   end    
+  
+	def test_font_access_from_cell
+		source = File.expand_path('data/style.xls', File.dirname(__FILE__))
+		book = nil
+		assert_nothing_raised { 
+			book = @parser.parse(source)
+		}
+		worksheet = book.worksheet(0)
 		
+		# Hit all the props from the cell's reference
+	  assert_equal true, worksheet.row(0).at(0).font[:bold]
+    assert_equal false, worksheet.row(0).at(0).font[:italic]
+    assert_equal false, worksheet.row(0).at(0).font[:underline]
+    assert_equal false, worksheet.row(0).at(0).font[:strikeout]
+
+	  assert_equal 12.0, worksheet.row(8).at(0).font[:height]
+    assert_equal false, worksheet.row(8).at(0).font[:superscript]
+    assert_equal false, worksheet.row(8).at(0).font[:subscript]
+    assert_equal 32767, worksheet.row(8).at(0).font[:color]
+    assert_equal 'Arial', worksheet.row(8).at(0).font[:name]
+  end
+  		
 end

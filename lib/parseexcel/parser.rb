@@ -544,7 +544,7 @@ module Spreadsheet
           underline = (underline != 0)        ? true : false;
         else
           height, attribute = work.unpack('v2')
-          name = work[5, work[4,1].unpack('c')].first
+          name = work[5, work[4,1].unpack('c').first]
           color = nil
           script = 0
           bold      = (attribute & 0x01 != 0) ? true : false;

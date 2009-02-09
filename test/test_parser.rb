@@ -708,12 +708,12 @@ class TestParser2 < Test::Unit::TestCase
 		assert_equal('hello', cell0.to_s('latin1'))
 		ann = cell0.annotation
 		assert_equal("david surmon:\nnow is the time for all good men to come to the aid of their country!", ann)
-		assert_equal('F', ann.author)
+		assert_equal('david surmon', ann.author)
 		cell1 = sheet.cell(0,1)
 		assert_equal('there', cell1.to_s('latin1'))
 		ann = cell1.annotation
 		assert_equal("david surmon:\nwhat should this comment be? Now what?", ann)
-		assert_equal('F', ann.author)
+		assert_equal('david surmon', ann.author)
 		cell2 = sheet.cell(0,2)
 		assert_equal('whos', cell2.to_s('latin1'))
 		cell3 = sheet.cell(1,0)
@@ -726,16 +726,16 @@ class TestParser2 < Test::Unit::TestCase
 			book = @parser.parse(source)
 		}
 		sheet = book.worksheet(0)
-    assert_equal('First Worksheet', sheet.name('latin1'))
+    assert_equal('Sheet1', sheet.name('latin1'))
 		sheet = book.worksheet(1)
-    assert_equal('Second Worksheet', sheet.name('latin1'))
+    assert_equal('Sheet2', sheet.name('latin1'))
 		cell0 = sheet.cell(0,0)
 		assert_equal('version', cell0.to_s('latin1'))
 		cell1 = sheet.cell(1,0)
 		assert_equal(1, cell1.to_i)
 		sheet = book.worksheet(2)
-    assert_equal('Third Worksheet', sheet.name('latin1'))
-    assert_equal(sheet, book.worksheet('Third Worksheet', 'latin1'))
-    assert_equal(sheet, book.worksheet("T\0h\0i\0r\0d\0 \0W\0o\0r\0k\0s\0h\0e\0e\0t\0"))
+    assert_equal('Sheet3', sheet.name('latin1'))
+    assert_equal(sheet, book.worksheet('Sheet3', 'latin1'))
+    #assert_equal(sheet, book.worksheet("T\0h\0i\0r\0d\0 \0W\0o\0r\0k\0s\0h\0e\0e\0t\0"))
 	end
 end

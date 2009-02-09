@@ -508,9 +508,11 @@ module Spreadsheet
 			end
 
       def font(op, len, work)
+        superscript = false
+        subscript = false
         case @workbook.biffversion 
         when VERSION_BIFF8
-          height, attribute, color, bold, superscript, underline = work.unpack('v5c')
+          height, attribute, color, bold, script, underline = work.unpack('v5c')
           size, high =  work[14,2].unpack('cc')
           if high != 0
                #  work[16, size * 2 ]
@@ -527,7 +529,7 @@ module Spreadsheet
           strikeout = (attribute & 0x08 != 0) ? true : false;
           underline = (underline != 0)        ? true : false;
         when VERSION_BIFF5
-          height, attribute, color, bold, superscript, underline = work.unpack('v5c')
+          height, attribute, color, bold, script, underline = work.unpack('v5c')
             #            $sFntName =
             #              $oBook->{FmtClass}
             #              ->TextFmt( substr( work, 15, unpack( "c", substr( work, 14, 1 ) ) ),
@@ -541,21 +543,30 @@ module Spreadsheet
         else
           height, attribute = work.unpack('v2')
           color = nil
-          superscript = 0
+          script = 0
           bold      = (attribute & 0x01 != 0) ? true : false;
           italic    = (attribute & 0x02 != 0) ? true : false;
           strikeout = (attribute & 0x04 != 0) ? true : false;
           underline = (attribute & 0x08 != 0) ? true : false;
           work[5, work[4,1].unpack('c')].first
         end
+        
+        case script
+        when 1
+          superscript = true
+        when 2
+          subscript = true
+        end
+        
         font = {
           :height      => height / 20.0,
           :attribute   => attribute,
           :color       => color,
           :superscript => superscript,
+          :subscript   => subscript,
           :underline   => underline, 
          # :name        => name,
-          :bold         => bold,
+          :bold        => bold,
           :italic      => italic,
           :underline   => underline,
           :strikeout   => strikeout,

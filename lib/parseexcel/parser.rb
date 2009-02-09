@@ -506,6 +506,16 @@ module Spreadsheet
 				return unless(@current_sheet)
 				@current_sheet.footer = simple_string(work)
 			end
+			
+      def swap_for_unicode(x)
+        midpoint = ( ( x.size / 2 ).to_i * 2 ) -1
+        0.step(midpoint, 2) do |i|
+          swapped_element = x[i,1]
+          x[i,1] = x[i+1,1]
+          x[i+1, 1] = swapped_element
+        end    
+        x
+      end
 
       def font(op, len, work)
         superscript = false
@@ -515,14 +525,11 @@ module Spreadsheet
           height, attribute, color, bold, script, underline = work.unpack('v5c')
           size, high =  work[14,2].unpack('cc')
           if high != 0
-               #  work[16, size * 2 ]
-              #           $sFntName = substr( work, 16, $iSize * 2 );
-              #           _SwapForUnicode( \$sFntName );
-              #           $sFntName = $oBook->{FmtClass}->TextFmt( $sFntName, 'ucs2' );
+            name = work[16, size * 2 ]
+            name = swap_for_unicode(name)
+            name = name.unpack('n*').pack('U*')
           else
-              #  work[16, size ]
-              #           $sFntName = substr( work, 16, $iSize );
-              #           $sFntName = $oBook->{FmtClass}->TextFmt( $sFntName, '_native_' );
+            name = work[16, size ]
           end    
           bold      = (bold >= 0x2BC)         ? true : false;
           italic    = (attribute & 0x02 != 0) ? true : false;
@@ -530,25 +537,20 @@ module Spreadsheet
           underline = (underline != 0)        ? true : false;
         when VERSION_BIFF5
           height, attribute, color, bold, script, underline = work.unpack('v5c')
-            #            $sFntName =
-            #              $oBook->{FmtClass}
-            #              ->TextFmt( substr( work, 15, unpack( "c", substr( work, 14, 1 ) ) ),
-            #                '_native_' );
-            #       work[5, work[4,1].unpack('c')].first
-   
-            bold      = (bold >= 0x2BC)         ? true : false;
-            italic    = (attribute & 0x02 != 0) ? true : false;
-            strikeout = (attribute & 0x08 != 0) ? true : false;
-            underline = (underline != 0)        ? true : false;
+          name = work[15, work[14,1].unpack('c').first]
+          bold      = (bold >= 0x2BC)         ? true : false;
+          italic    = (attribute & 0x02 != 0) ? true : false;
+          strikeout = (attribute & 0x08 != 0) ? true : false;
+          underline = (underline != 0)        ? true : false;
         else
           height, attribute = work.unpack('v2')
+          name = work[5, work[4,1].unpack('c')].first
           color = nil
           script = 0
           bold      = (attribute & 0x01 != 0) ? true : false;
           italic    = (attribute & 0x02 != 0) ? true : false;
           strikeout = (attribute & 0x04 != 0) ? true : false;
           underline = (attribute & 0x08 != 0) ? true : false;
-          work[5, work[4,1].unpack('c')].first
         end
         
         case script
@@ -565,7 +567,7 @@ module Spreadsheet
           :superscript => superscript,
           :subscript   => subscript,
           :underline   => underline, 
-         # :name        => name,
+          :name        => name,
           :bold        => bold,
           :italic      => italic,
           :underline   => underline,

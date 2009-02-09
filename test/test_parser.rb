@@ -763,6 +763,7 @@ class TestParser2 < Test::Unit::TestCase
                    :italic=>false,
                    :underline=>false,
                    :strikeout=>false,
+                   :name=>'Arial',
                    :color=>32767}, book.font(0))
   end
  
@@ -827,24 +828,35 @@ class TestParser2 < Test::Unit::TestCase
     assert_equal false, book.font(id)[:superscript]
     assert_equal false, book.font(id)[:subscript]
     assert_equal 32767, book.font(id)[:color]
+    assert_equal 'Arial', book.font(id)[:name]
  
     id = worksheet.row(9).at(0).format.font_no 
     assert_equal 10.0, book.font(id)[:height]
     assert_equal true, book.font(id)[:superscript]
     assert_equal false, book.font(id)[:subscript]
     assert_equal 32767, book.font(id)[:color]
+    assert_equal 'Arial', book.font(id)[:name]
 
     id = worksheet.row(10).at(0).format.font_no 
     assert_equal 10.0, book.font(id)[:height]
     assert_equal false, book.font(id)[:superscript]
     assert_equal true, book.font(id)[:subscript]
     assert_equal 32767, book.font(id)[:color]
+    assert_equal 'Arial', book.font(id)[:name]
 
     id = worksheet.row(11).at(0).format.font_no 
     assert_equal 10.0, book.font(id)[:height]
     assert_equal false, book.font(id)[:superscript]
     assert_equal false, book.font(id)[:subscript]
     assert_equal 16, book.font(id)[:color]
-end    
+    assert_equal 'Arial', book.font(id)[:name]
+
+    id = worksheet.row(12).at(0).format.font_no 
+    assert_equal 10.0, book.font(id)[:height]
+    assert_equal false, book.font(id)[:superscript]
+    assert_equal false, book.font(id)[:subscript]
+    assert_equal 32767, book.font(id)[:color]
+    assert_equal 'Courier New', book.font(id)[:name]
+  end    
 		
 end

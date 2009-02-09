@@ -2,19 +2,17 @@ $:.unshift('lib')
  
 require 'rake/testtask'
 
-RCOV_DIR = 'rcov'
-
 begin
   require 'jeweler'
   Jeweler::Tasks.new do |s|
     s.name               = 'parseexcel'
     s.rubyforge_project  = 'parseexcel'
     s.platform           = Gem::Platform::CURRENT
-    s.email              = 'hugh_mcgowan@yahoo.com' 
-    s.homepage           = "http://github.com/hmcgowan/rasta"
+    s.email              = 'hwyss@ywesee.com' 
+    s.homepage           = "http://raa.ruby-lang.org/project/parseexcel/"
     s.summary            = "parseexcel"
     s.description        = "Spreadsheet::ParseExcel - Get information from an Excel file."
-    s.authors            = ['Hugh McGowan']
+    s.authors            = ['Hannes Wyss']
     s.files              =  FileList[ "{lib,test}/**/*"]
     s.has_rdoc = true
     s.extra_rdoc_files = ["README", "COPYING"]

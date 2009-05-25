@@ -1,3 +1,8 @@
+NOTE: the parseexcel developer has retired this codeline in favor of ruby-spreadsheet:
+
+http://github.com/jacobat/ruby-spreadsheet/tree/master
+
+
 Spreadsheet::ParseExcel - Get information from an Excel file.
 ============
 Version: 0.5.2
